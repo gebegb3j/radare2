@@ -166,10 +166,10 @@ static bool isInvalidMemory(RAnal *anal, const ut8 *buf, int len) {
 
 static bool is_symbol_flag(const char *name) {
 	return strstr (name, "imp.")
-		|| strstr (fi->name, "dbg.")
-		|| strstr (fi->name, "sym.")
-		|| strstr (fi->name, "entry")
-		|| strstr (fi->name, "main");
+		|| strstr (name, "dbg.")
+		|| strstr (name, "sym.")
+		|| strstr (name, "entry")
+		|| strstr (name, "main");
 }
 
 static bool next_instruction_is_symbol(RAnal *anal, RAnalOp *op) {
