@@ -538,7 +538,6 @@ static int fcn_recurse(RAnal *anal, RAnalFunction *fcn, ut64 addr, ut64 len, int
 	};
 	bool arch_destroys_dst = does_arch_destroys_dst (anal->cur->arch);
 	bool is_arm = anal->cur->arch && !strncmp (anal->cur->arch, "arm", 3);
-	char tmp_buf[MAX_FLG_NAME_SIZE + 5] = "skip";
 	bool is_x86 = is_arm ? false: anal->cur->arch && !strncmp (anal->cur->arch, "x86", 3);
 	bool is_amd64 = is_x86 ? fcn->cc && !strcmp (fcn->cc, "amd64") : false;
 	bool is_dalvik = is_x86? false: anal->cur->arch && !strncmp (anal->cur->arch, "dalvik", 6);
@@ -868,7 +867,7 @@ repeat:
 			}
 			if (anal->opt.hpskip && regs_exist (op.src[0], op.dst)
 			&& !strcmp (op.src[0]->reg->name, op.dst->reg->name)) {
-				skip_ret = skip_hp (anal, fcn, &op, bb, addr, tmp_buf, oplen, delay.un_idx, &idx);
+				skip_ret = skip_hp (anal, fcn, &op, bb, addr, oplen, delay.un_idx, &idx);
 				if (skip_ret == 1) {
 					goto repeat;
 				}
@@ -907,7 +906,7 @@ repeat:
 			// skip lea reg,[reg]
 			if (anal->opt.hpskip && regs_exist (op.src[0], op.dst)
 			&& !strcmp (op.src[0]->reg->name, op.dst->reg->name)) {
-				skip_ret = skip_hp (anal, fcn, &op, bb, at, tmp_buf, oplen, delay.un_idx, &idx);
+				skip_ret = skip_hp (anal, fcn, &op, bb, at, oplen, delay.un_idx, &idx);
 				if (skip_ret == 1) {
 					goto repeat;
 				}
