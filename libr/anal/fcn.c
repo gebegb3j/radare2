@@ -516,6 +516,7 @@ static inline bool does_arch_destroys_dst(const char *arch) {
 }
 
 static int fcn_recurse(RAnal *anal, RAnalFunction *fcn, ut64 addr, ut64 len, int depth) {
+#if 0
 	if (depth < 1) {
 		if (anal->verbose) {
 			eprintf ("Too deep fcn_recurse at 0x%"PFMT64x "\n", addr);
@@ -523,6 +524,7 @@ static int fcn_recurse(RAnal *anal, RAnalFunction *fcn, ut64 addr, ut64 len, int
 		return R_ANAL_RET_ERROR; // MUST BE TOO DEEP
 	}
 	// TODO Store all this stuff in the heap so we save memory in the stack
+#endif
 	RAnalOp *op = NULL;
 	const bool continue_after_jump = anal->opt.afterjmp;
 	const int addrbytes = anal->iob.io ? anal->iob.io->addrbytes : 1;
@@ -1097,15 +1099,16 @@ repeat:
 				}
 			}
 			int saved_stack = fcn->stack;
+			// TODO: depth -1 in here
 			if (continue_after_jump) {
-				r_anal_fcn_bb (anal, fcn, op->jump, depth - 1);
+				r_anal_fcn_bb (anal, fcn, op->jump, depth);
 				fcn->stack = saved_stack;
-				ret = r_anal_fcn_bb (anal, fcn, op->fail, depth - 1);
+				ret = r_anal_fcn_bb (anal, fcn, op->fail, depth);
 				fcn->stack = saved_stack;
 			} else {
-				ret = r_anal_fcn_bb (anal, fcn, op->jump, depth - 1);
+				ret = r_anal_fcn_bb (anal, fcn, op->jump, depth);
 				fcn->stack = saved_stack;
-				ret = r_anal_fcn_bb (anal, fcn, op->fail, depth - 1);
+				ret = r_anal_fcn_bb (anal, fcn, op->fail, depth);
 				fcn->stack = saved_stack;
 				if (op->jump < fcn->addr) {
 					if (!overlapped) {
