@@ -289,13 +289,14 @@ static bool regs_exist(RAnalValue *src, RAnalValue *dst) {
 
 // 0 if not skipped; 1 if skipped; 2 if skipped before
 static int skip_hp(RAnal *anal, RAnalFunction *fcn, RAnalOp *op, RAnalBlock *bb, ut64 addr,
-                   char *tmp_buf, int oplen, int un_idx, int *idx) {
+                   int oplen, int un_idx, int *idx) {
 	// this step is required in order to prevent infinite recursion in some cases
 	if ((addr + un_idx - oplen) == fcn->addr) {
 		// use addr instead of op->addr to mark repeat
 		if (!anal->flb.exist_at (anal->flb.f, "skip", 4, addr)) {
-			snprintf (tmp_buf + 5, MAX_FLG_NAME_SIZE - 6, "%"PFMT64u, addr);
-			anal->flb.set (anal->flb.f, tmp_buf, addr, oplen);
+			char *name = r_str_newf ("skip.%"PFMT64u, addr);
+			anal->flb.set (anal->flb.f, name, addr, oplen);
+			free (name);
 			fcn->addr += oplen;
 			r_anal_block_relocate (bb, bb->addr + oplen, bb->size - oplen);
 			*idx = un_idx;
