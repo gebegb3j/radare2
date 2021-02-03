@@ -388,7 +388,7 @@ EXPECT=<<EOF
 0x00021484    1 8            sym.__errno
 0x0001f7cc    1 48           sym.__syscall_error
 EOF
-RON
+RUN
 
 NAME=function naming
 FILE=-
